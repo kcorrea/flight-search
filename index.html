@@ -1,0 +1,131 @@
+<!doctype html>
+<html class="no-js" lang="" ng-app="flightSearchApp">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Search for Flights</title>
+        <meta name="description" content="Flight Search">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="css/angular-datepicker.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.blue-red.min.css" />
+        <link rel="stylesheet" href="css/main.css">
+
+        <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+    </head>
+    <body>
+        <div ng-controller="flightSearchCtrl">
+
+            <header class="mdl-grid">
+                <div class="mdl-cell mdl-cell--12-col">  
+                    <h1>Flight Search</h1>
+                </div>
+            </header>
+
+            <section class="mdl-grid search-area">
+                <div class="mdl-cell mdl-cell--3-col">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input ng-model="searchParams.departureCode" class="mdl-textfield__input" type="text" id="DepartureCode">
+                        <label class="mdl-textfield__label" for="sample1">Departure Airport (Ex: YYZ)</label>
+                    </div>    
+
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input ng-model="searchParams.departureDate" class="mdl-textfield__input" type="text" id="DepartureDate">
+                        <label class="mdl-textfield__label" for="sample1">Departure Date (Ex: 2017-11-01)</label>
+                    </div>    
+                </div>
+
+                <div class="mdl-cell mdl-cell--3-col">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input ng-model="searchParams.returnCode" class="mdl-textfield__input" type="text" id="ReturnCode">
+                        <label class="mdl-textfield__label" for="sample1">Return Airport (Ex: YYZ)</label>
+                    </div>    
+
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input ng-model="searchParams.returnDate" class="mdl-textfield__input" type="text" id="ReturnDate">
+                        <label class="mdl-textfield__label" for="sample1">Return Date (Ex: 2017-12-01)</label>
+                    </div>                
+                </div>
+
+                <div class="mdl-cell mdl-cell--3-col">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input ng-model="searchParams.adults" class="mdl-textfield__input" type="number" id="Adults">
+                        <label class="mdl-textfield__label" for="sample1">Number of adults traveling</label>
+                    </div>  
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input ng-model="searchParams.children" class="mdl-textfield__input" type="number" id="Children">
+                        <label class="mdl-textfield__label" for="sample1">Number of children traveling</label>
+                    </div>  
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input ng-model="searchParams.infants" class="mdl-textfield__input" type="number" id="Infants">
+                        <label class="mdl-textfield__label" for="sample1">Number of infants traveling</label>
+                    </div>                                                  
+                </div>                        
+
+                <div class="mdl-cell mdl-cell--3-col">
+                    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" ng-click="startSearch()">Search for Flights</button>
+                </div>
+
+            </section>    
+
+            <section class="mdl-grid" ng-show="resultsAvailable">
+                <div class="mdl-cell mdl-cell--12-col header-flight-results">
+                    <h4><i class="material-icons">flight_takeoff</i> Your departure flights</h4>
+                </div>
+                <div class="mdl-cell mdl-cell--3-col result-card" ng-repeat="x in departFlightResults">
+                    <i class="material-icons">local_airport</i> 
+                    <h5>Option {{$index + 1}} ({{x.totallegs}} Stops)</h5>
+                    <p>Price {{ x.totalPrice | price_format }}</p>
+                    <div class="leg" ng-repeat="y in x.legsInfo">
+                        <p>Leg {{$index + 1}} - {{y.origin}} to {{y.destination}}</p>
+
+                        <p>Carrier: {{y.carrier}}<br>
+                        Flight Number: {{y.number}}</p>
+
+                        <p>Arrival: {{y.arrivalTime | date_format}}<br>
+                        Departure: {{y.departureTime | date_format}}<br>
+                        Flight Duration: {{y.duration}}</p>
+
+                        <p>Meals: {{y.meal}}</p>
+                    </div>
+                </div>
+            </section>     
+
+            <section class="mdl-grid" ng-show="resultsAvailable">
+                <div class="mdl-cell mdl-cell--12-col header-flight-results">
+                    <h4><i class="material-icons">flight_land</i> Your return flights</h4>
+                </div>
+                <div class="mdl-cell mdl-cell--3-col result-card" ng-repeat="x in returnFlightResults">
+                    <i class="material-icons">local_airport</i> 
+                    <h5>Option {{$index + 1}} ({{x.totallegs}} Stops)</h5>
+                    <p>Price {{ x.totalPrice | price_format }}</p>
+                    <div class="leg" ng-repeat="y in x.legsInfo">
+                        <p>Leg {{$index + 1}} - {{y.origin}} to {{y.destination}}</p>
+
+                        <p>Carrier: {{y.carrier}}<br>
+                        Flight Number: {{y.number}}</p>
+
+                        <p>Arrival: {{y.arrivalTime | date_format}}<br>
+                        Departure: {{y.departureTime | date_format}}<br>
+                        Flight Duration: {{y.duration}}</p>
+
+                        <p>Meals: {{y.meal}}</p>
+                    </div>
+                </div>
+            </section>                                  
+
+            <div class="loader" ng-show="loadingInProgress">
+                <p>Searching for flights...</p>
+                <i class="material-icons plane">local_airport</i>
+            </div>     
+
+        </div>        
+
+        <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
+        <script src="js/vendor/angular-datepicker.min.js"></script>
+        <script src="js/main.js"></script>
+
+    </body>
+</html>
