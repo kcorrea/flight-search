@@ -1,6 +1,6 @@
 var fsApp = angular.module('flightSearchApp', ["720kb.datepicker"]);
 
-fsApp.module('flightSearchApp').filter('price_format', function() {
+fsApp.filter('price_format', function() {
   return function(price) {
   	var out = "";
 	var out = price.replace("CAD", "$");
@@ -8,7 +8,7 @@ fsApp.module('flightSearchApp').filter('price_format', function() {
   };
 })
 
-fsApp.module('flightSearchApp').filter('date_format', function() {
+fsApp.filter('date_format', function() {
   return function(datetime) {
   	var out = "";
 	var out = datetime.replace("T", " at ");
@@ -16,7 +16,7 @@ fsApp.module('flightSearchApp').filter('date_format', function() {
   };
 })
 
-fsApp.module('flightSearchApp').controller('flightSearchCtrl', function ($scope, $http) {
+fsApp.controller('flightSearchCtrl', function ($scope, $http) {
 
 	// constants for setup
 	$scope.QPX_url = "https://www.googleapis.com/qpxExpress/v1/trips/search?key=AIzaSyDEe8vSJJozjtPLa5Q5UXBd6IPLh8u00OI";
